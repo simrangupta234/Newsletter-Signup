@@ -37,7 +37,7 @@ app.post("/", function(req, res){
 
   const options={
     method: "POST",
-    auth: "simran:2da66c992ae1aecdb8e47e5d164a1e50-us20"
+    auth: "simran:process.env.API_KEY"
   }
 
   const request = https.request(url, options, function(response){
