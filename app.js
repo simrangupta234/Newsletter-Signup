@@ -34,10 +34,10 @@ app.post("/", function(req, res){
   const jsonData = JSON.stringify(data);
 
   const url = "https://us20.api.mailchimp.com/3.0/lists/50c33a3110";
-
+  const api_key = process.env.API_KEY;
   const options={
     method: "POST",
-    auth: "simran:process.env.API_KEY"
+    auth: "simran:api_key"
   }
 
   const request = https.request(url, options, function(response){
