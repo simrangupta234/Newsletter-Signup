@@ -2,17 +2,22 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
 const https = require("https");
+const { Http2ServerRequest } = require("http2");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
 
 const app = express();
 
 app.use(express.static("public"))
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", function(req, res){
+app.get("/", function (req, res) {
   res.sendFile(__dirname + "/" + "/signup.html");
 });
 
-app.post("/", function(req, res){
+app.post("/", function (req, res) {
 
   const firstName = req.body.fName;
   const lastName = req.body.lName;
@@ -33,35 +38,37 @@ app.post("/", function(req, res){
 
   const jsonData = JSON.stringify(data);
 
-  const url = "https://us20.api.mailchimp.com/3.0/lists/50c33a3110";
+
+  const url = process.env.URL;
   const api_key = process.env.API_KEY;
-  const options={
+
+  const options = {
     method: "POST",
-    auth: "simran:api_key"
+    auth: api_key
   }
 
-  const request = https.request(url, options, function(response){
+  const request = https.request(url, options, function (response) {
 
-    if(response.statusCode === 200){
+    if (response.statusCode === 200) {
       res.sendFile(__dirname + "/success.html");
-    } else{
+    } else {
       res.sendFile(__dirname + "/failure.html");
     }
 
-    response.on("data", function(data){
+    response.on("data", function (data) {
       console.log(JSON.parse(data));
     })
-})
+  })
 
   request.write(jsonData);
   request.end();
 
 })
 
-app.post("/failure", function(req, res){
+app.post("/failure", function (req, res) {
   res.redirect("/");
 });
 
-app.listen(process.env.PORT || 3000, function(){
+app.listen(process.env.PORT || 3000, function () {
   console.log("Server is running on port 3000");
 });
